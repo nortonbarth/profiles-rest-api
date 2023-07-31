@@ -15,5 +15,7 @@
     "python.linting.enabled": true,
     "python.linting.lintOnSave": true,
     "django.snippets.use": true,
-    "emmet.includeLanguages": {"django-html":"html"}
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    }
 }
