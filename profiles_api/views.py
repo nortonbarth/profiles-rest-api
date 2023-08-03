@@ -4,6 +4,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import viewsets
+from rest_framework import filters, renderers
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.settings import api_settings
+from rest_framework.renderers import TemplateHTMLRenderer
+
 
 
 from . import serializers
@@ -16,9 +21,11 @@ class HelloApiView(APIView):
     """Test API view"""
 
     serializers_class = serializers.HelloSerializer
-
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "profiles_api/base.html"
     def get(self, request, format=None):
         """Return a list of API features"""
+        
         an_apiview = [
             "Uses HTTP methods as function (get, post, patch, put, delete)",
             "Is similar to a traditional Django View",
@@ -27,9 +34,7 @@ class HelloApiView(APIView):
         ]
 
         return Response(
-            {"message":"hello",
-            'an_apiview':an_apiview
-            }
+            template_name = "profiles_api/base.html"
                         )
 
     def post(self,request):
@@ -112,3 +117,11 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = models.UserProfile.objects.all()
     authentication_classes = (TokenAuthentication,)
     permissions_classes = (permissions.UpdateOwnProfile,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name', 'email',)
+
+
+
+class UserLoginApiView(ObtainAuthToken):
+    """Handle creating user authentication tokens"""
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
